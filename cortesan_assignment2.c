@@ -2,6 +2,18 @@
 #include <stdlib.h> // for atoi,  EXIT_SUCCESS and EXIT_FAILURE
 #include <string.h> // for strtok_r
 
+/*define a structure movie with elements title, year, languages, rating*/
+struct movie{
+    char* title;
+    int year;
+    char* languages[5];
+    double rating;
+    struct movie *next;     // pointer to next node
+};
+
+// define the head pointer
+struct movie* head = NULL;
+
 /* Copied from movies.c provided by Assignment materials
  * Function: processMovieFile
  *   Opens a file, reads and prints each line
@@ -21,6 +33,10 @@
     while(getline(&currLine, &len, movieFile) != -1)
     {
         printf("%s", currLine);
+        // intead of print, use malloc and parse strings to get title, year, lang, rating
+        // make local variable that gets populated with parsed data and plug into linked list
+        (struct movie *)malloc(sizeof(struct movie));
+    
         *numMovies += 1;
     }
     // subtract header line from movie count
@@ -31,7 +47,23 @@
     fclose(movieFile);
 }
 
-void searchMovieYear(int* year){
+void searchMoviesByYear(int targetYear){
+    // define pointer to a new node and initialize to first node of the linked list (head)
+    struct movie* newNode = head;
+   
+
+     // in the do, is movies.year == targetyear if yes, print the movie.title
+
+    // then set pointer to node == next variable
+
+    do {
+        if (newNode->year == targetYear) {
+            printf("%s\n", newNode->title);
+            }
+        newNode = newNode->next;
+    }
+    // in while, while node is not equal to null
+    while (newNode != NULL);
 
 }
 
@@ -46,15 +78,6 @@ int main ( int argc, char **argv ){
         return EXIT_FAILURE;
     }
 
-    /*define a structure movie with elements title, year, languages, rating*/
-    struct movie{
-        char* title;
-        int year;
-        char* languages[5];
-        double rating;
-        struct movie *next;
-    };
-
     int movieCount = 0;
     processMovieFile(argv[1], &movieCount);
     char* filePath = argv[1];
@@ -63,19 +86,19 @@ int main ( int argc, char **argv ){
     int choiceNum;      // holds int 1-4 representing menu choice
     int yearInput;      // holds year specified by user
 
-    //while(1){
+    while(1){
         printf("\n1. Show movies released in the specified year\n"
             "2. Show highest rated movie for each year\n"
             "3. Show the title and year of release of all movies in a specific language\n"
             "4. Exit from the program\n"
             "Enter a choice from 1 to 4: ");
-    //}
         scanf("%d", &choiceNum);
 
         // enter menu choice number
         if(choiceNum==1){
             printf("Enter the year for which you want to see movies: ");
             scanf("%d", &yearInput);
+            searchMoviesByYear(yearInput);
         }
 
         else if(choiceNum==2){
@@ -93,6 +116,6 @@ int main ( int argc, char **argv ){
         else{
             printf("You entered an incorrect choice. Try again.\n");
         }
-
+    }
     return EXIT_SUCCESS;
 }
