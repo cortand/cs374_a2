@@ -14,7 +14,7 @@ struct movie{
 // define the head pointer
 struct movie* head = NULL;
 
-void parseCSVline(char* CSVline){
+struct movie* parseCSVline(char* CSVline){
     struct movie* newMovie = calloc(1, sizeof(struct movie));
     newMovie->next = NULL;
     
@@ -85,8 +85,6 @@ void parseCSVline(char* CSVline){
     
         *numMovies += 1;
     }
-    // subtract header line from movie count
-    *numMovies = *numMovies - 1;  
     // Free the memory allocated by getline for currLine
     free(currLine);
     // Close the file
@@ -112,6 +110,9 @@ void searchMoviesByYear(int targetYear){
     }
 }
 
+void showLanguageInfo (char language){
+    
+}
 /**
  * 
  */
