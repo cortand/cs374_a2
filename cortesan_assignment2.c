@@ -15,12 +15,38 @@ struct movie{
 struct movie* head = NULL;
 
 void parseCSVline(char* CSVline){
-    struct movie* newMovie = malloc(sizeof(struct movie));
+    struct movie* newMovie = calloc(1, sizeof(struct movie));
     newMovie->next = NULL;
-    newMovie->languages[5] = NULL;
     
     char* CSVlineCopy;
-    CSVlineCopy = strdup(CSVline)
+    CSVlineCopy = strdup(CSVline);
+
+    char* savePtr1;
+    char* titleToken = strtok_r(CSVlineCopy, ",", &savePtr1);
+    newMovie->title = strdup(titleToken);
+
+    char* yearToken = strtok_r(NULL, ",", &savePtr1);
+    newMovie->year = atoi(yearToken);
+
+    char* savePtr2;
+    char* languagesToken = strtok_r(NULL, ",", &savePtr1);
+    languagesToken++;   // advance pointer by 1 to exclude "["
+    int len = strlen(languagesToken); // find the string length
+    languagesToken[len - 1] = '\0'; // replace "]" with string terminator
+    int i = 0;
+    char* langToken = strtok_r(languagesToken, ";", &savePtr2);
+    while (langToken != NULL && i <5) {
+        newMovie->languages[i] = strdup(langToken);
+        i++;
+        langToken = strtok_r(NULL, ";", &savePtr2);
+    }
+    
+    char* ratingToken = strtok_r(NULL, ",", &savePtr1);
+    newMovie->rating = strtof(ratingToken, NULL);
+   
+    free(CSVlineCopy);
+
+    return newMovie;
 
  }
 /* Copied from movies.c provided by Assignment materials
