@@ -67,7 +67,7 @@ struct movie* parseCSVline(char* CSVline){
     // Read the file line by line
     while(getline(&currLine, &len, movieFile) != -1)
     {
-        printf("%s", currLine);
+        //printf("%s", currLine);
 
         if (firstLine) {
             firstLine = 0;
@@ -130,6 +130,46 @@ void searchLanguageInfo (char* language){
          printf("No data about movies released in %s\n", language);
     }
 }
+
+int yearIsDisplayed (int year, int* yearsDisplayed, int displayCount) {
+    int i = 0;
+    while (i < displayCount){
+        if (yearsDisplayed[i] == year) {
+            return 1;
+        }
+        i++;
+    }
+    return 0;
+}
+
+void searchHighestRatedbyYear (int movieCount){
+    int *yearsPrinted = malloc(movieCount * sizeof(int));
+    int displayCount = 0;
+    struct movie * currMovie = head;
+
+    while (currMovie != NULL){
+        int yr = currMovie->year;
+        if (! yearIsDisplayed(yr, yearsPrinted, displayCount)){
+            struct movie * movieToCheck = head;
+            double currHighestRating = -1.0;
+            char* currHighestTitle = NULL;
+            while (movieToCheck != NULL) {
+                if (movieToCheck->year == yr) {
+                if (movieToCheck->rating > currHighestRating){
+                    currHighestRating = movieToCheck->rating;
+                    currHighestTitle = movieToCheck->title;
+                }
+            }
+            movieToCheck = movieToCheck->next;
+            }
+            printf("%d %.1f %s\n", yr, currHighestRating, currHighestTitle);
+            yearsPrinted[displayCount] = yr;
+            displayCount++;
+        }
+        currMovie = currMovie->next;
+    }
+    free(yearsPrinted);
+}
 /**
  * 
  */
@@ -166,7 +206,7 @@ int main ( int argc, char **argv ){
         }
 
         else if(choiceNum==2){
-
+            searchHighestRatedbyYear(movieCount);
         }
 
         else if(choiceNum==3){
