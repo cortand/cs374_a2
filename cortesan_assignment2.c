@@ -14,6 +14,15 @@ struct movie{
 // define the head pointer
 struct movie* head = NULL;
 
+void parseCSVline(char* CSVline){
+    struct movie* newMovie = malloc(sizeof(struct movie));
+    newMovie->next = NULL;
+    newMovie->languages[5] = NULL;
+    
+    char* CSVlineCopy;
+    CSVlineCopy = strdup(CSVline)
+
+ }
 /* Copied from movies.c provided by Assignment materials
  * Function: processMovieFile
  *   Opens a file, reads and prints each line
@@ -22,6 +31,7 @@ struct movie* head = NULL;
  *  This function shows sample code that opens a file, then in a loop reads and prints each line in that file.
  *  You can use this code however you want in your Prog Assignment 2.
  */
+
  void processMovieFile(char* filePath, int* numMovies){
     char *currLine = NULL;
     size_t len = 0;
@@ -29,13 +39,23 @@ struct movie* head = NULL;
     // Open the specified file for reading only
     FILE *movieFile = fopen(filePath, "r");
 
+    int firstLine = 1;
     // Read the file line by line
     while(getline(&currLine, &len, movieFile) != -1)
     {
         printf("%s", currLine);
+
+        if (firstLine) {
+            firstLine = 0;
+            continue;
+        }
+
         // intead of print, use malloc and parse strings to get title, year, lang, rating
         // make local variable that gets populated with parsed data and plug into linked list
-        (struct movie *)malloc(sizeof(struct movie));
+        struct movie* node = parseCSVline(currLine);
+
+        node->next = head;
+        head = node;
     
         *numMovies += 1;
     }
@@ -47,24 +67,23 @@ struct movie* head = NULL;
     fclose(movieFile);
 }
 
+
 void searchMoviesByYear(int targetYear){
     // define pointer to a new node and initialize to first node of the linked list (head)
     struct movie* newNode = head;
+    int movieFound = 0;
    
-
-     // in the do, is movies.year == targetyear if yes, print the movie.title
-
-    // then set pointer to node == next variable
-
-    do {
+    // check if there is a movie released in the desired year
+    while (newNode != NULL) {
         if (newNode->year == targetYear) {
             printf("%s\n", newNode->title);
-            }
-        newNode = newNode->next;
+            movieFound = 1;
+        }
+        newNode = newNode->next;        // advance node pointer
     }
-    // in while, while node is not equal to null
-    while (newNode != NULL);
-
+        if (!movieFound) {
+            printf("No data about movies released in the year %d\n", targetYear);
+    }
 }
 
 /**
