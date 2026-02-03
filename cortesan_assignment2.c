@@ -6,7 +6,7 @@
 struct movie{
     char* title;
     int year;
-    char* languages[5];
+    char* languages[5];     // max 5 languages
     double rating;
     struct movie *next;     // pointer to next node
 };
@@ -30,9 +30,9 @@ struct movie* parseCSVline(char* CSVline){
 
     char* savePtr2;
     char* languagesToken = strtok_r(NULL, ",", &savePtr1);
-    languagesToken++;   // advance pointer by 1 to exclude "["
-    int len = strlen(languagesToken); // find the string length
-    languagesToken[len - 1] = '\0'; // replace "]" with string terminator
+    languagesToken++;                   // advance pointer by 1 to exclude "["
+    int len = strlen(languagesToken);   // find the string length
+    languagesToken[len - 1] = '\0';     // replace "]" with string terminator
     int i = 0;
     char* langToken = strtok_r(languagesToken, ";", &savePtr2);
     while (langToken != NULL && i <5) {
@@ -49,15 +49,13 @@ struct movie* parseCSVline(char* CSVline){
     return newMovie;
 
  }
-/* Copied from movies.c provided by Assignment materials
+/* Adapted from movies.c provided by Assignment materials
  * Function: processMovieFile
  *   Opens a file, reads and prints each line
  *   filePath: path to the file
  * 
  *  This function shows sample code that opens a file, then in a loop reads and prints each line in that file.
- *  You can use this code however you want in your Prog Assignment 2.
  */
-
  void processMovieFile(char* filePath, int* numMovies){
     char *currLine = NULL;
     size_t len = 0;
@@ -75,9 +73,7 @@ struct movie* parseCSVline(char* CSVline){
             firstLine = 0;
             continue;
         }
-
-        // intead of print, use malloc and parse strings to get title, year, lang, rating
-        // make local variable that gets populated with parsed data and plug into linked list
+        // define node that gets populated with parsed data and plug into linked list
         struct movie* node = parseCSVline(currLine);
 
         node->next = head;
@@ -110,8 +106,29 @@ void searchMoviesByYear(int targetYear){
     }
 }
 
-void showLanguageInfo (char language){
-    
+void searchLanguageInfo (char* language){
+    struct movie* newNode = head;
+    int movieFound = 0;
+
+    // check if the language input matches a movie's language
+    while (newNode != NULL) {
+        int i = 0;
+        while (i<5){
+            if (newNode->languages[i] != NULL){
+            int cmp = strcmp(newNode->languages[i], language);
+                if (cmp == 0){
+                    movieFound ++;
+                    printf("%d %s\n", newNode->year, newNode->title);
+                    break;
+            }
+        }
+        i++;
+        }
+        newNode = newNode->next;
+    }
+    if (movieFound == 0) {
+         printf("No data about movies released in %s\n", language);
+    }
 }
 /**
  * 
@@ -129,8 +146,9 @@ int main ( int argc, char **argv ){
     char* filePath = argv[1];
     printf("\nProcessed file %s and parsed data for %d movies\n", filePath, movieCount);
   
-    int choiceNum;      // holds int 1-4 representing menu choice
-    int yearInput;      // holds year specified by user
+    int choiceNum;      // int 1-4 representing menu choice
+    int yearInput;      // year specified by user
+    char language[20];  // language to search in movies
 
     while(1){
         printf("\n1. Show movies released in the specified year\n"
@@ -152,7 +170,9 @@ int main ( int argc, char **argv ){
         }
 
         else if(choiceNum==3){
-
+            printf("Enter the language for which you want to see movies: ");
+            scanf("%19s", language);
+            searchLanguageInfo(language);
         }
 
         else if(choiceNum==4){
